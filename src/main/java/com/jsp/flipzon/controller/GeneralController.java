@@ -11,16 +11,10 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class GeneralController {
 
-	private final CustomerController customerController;
-
 	@Value("${admin.email}")
 	private String adminEmail;
 	@Value("${admin.password}")
 	private String adminPassword;
-
-	GeneralController(CustomerController customerController) {
-		this.customerController = customerController;
-	}
 
 	@GetMapping("/")
 	public String loadMain() {
