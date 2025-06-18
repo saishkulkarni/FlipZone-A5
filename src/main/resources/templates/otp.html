@@ -51,10 +51,15 @@
     <div class="otp-form">
       <h3 class="mb-3 text-center">OTP Verification</h3>
       <p class="text-center mb-4 text-muted">Enter the 6-digit OTP sent to your registered email or phone.</p>
-      <form>
+      
+      <span style="color:green" th:text="${session.pass}"></span>
+      	<span style="color:red" th:text="${session.fail}"></span>
+		<span th:text="${@generalService.removeMessage()}"></span>
+      
+      <form action="/customer/submit-otp" method="post">
         <div class="mb-4">
           <label for="otpInput" class="form-label">One Time Password (OTP)</label>
-          <input type="text" class="form-control text-center" id="otpInput" placeholder="Enter OTP" pattern="[0-9]{6}" maxlength="6" required>
+          <input type="text" name="otp" class="form-control text-center" id="otpInput" placeholder="Enter OTP" pattern="[0-9]{6}" maxlength="6" required>
         </div>
 
         <div class="d-grid">

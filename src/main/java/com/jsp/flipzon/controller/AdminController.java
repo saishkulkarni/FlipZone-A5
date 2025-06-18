@@ -1,8 +1,11 @@
 package com.jsp.flipzon.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.jsp.flipzon.service.AdminService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -10,12 +13,12 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/admin")
 public class AdminController {
 
+	@Autowired
+	AdminService adminService;
+
 	@GetMapping("/home")
 	public String loadAdminHome(HttpSession session) {
-		if (isLoggedIn(session))
-			return "admin-home.html";
-		else
-			return "redirect:/login";
+		return adminService.loadHome(session);
 	}
 
 	@GetMapping("/add-product")
@@ -36,13 +39,6 @@ public class AdminController {
 	@GetMapping("/delete-product")
 	public String deleteProduct() {
 		return "view-products.html";
-	}
-
-	boolean isLoggedIn(HttpSession session) {
-		if (session.getAttribute("admin") != null)
-			return true;
-		else
-			return false;
 	}
 
 }
