@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.jsp.flipzon.config.AES;
 import com.jsp.flipzon.entity.Customer;
+import com.jsp.flipzon.exception.NotLoggedInException;
 import com.jsp.flipzon.repository.CustomerRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +27,7 @@ public class CustomerService {
 	public String register(Customer customer, HttpSession session) {
 		if (customerRepository.existsByEmail(customer.getEmail())
 				|| customerRepository.existsByMobile(customer.getMobile())) {
-			session.setAttribute("fail", "Account Already Exists");
+			session.setAttribute("fail", "* Account Already Exists");
 			return "redirect:/customer/register";
 		} else {
 			customer.setPassword(AES.encrypt(customer.getPassword()));
@@ -62,6 +63,18 @@ public class CustomerService {
 			session.setAttribute("fail", "Invalid Otp, Try Again");
 			return "redirect:/customer/otp";
 		}
+	}
+
+	public String loadHome(HttpSession session) {
+		getCustomerFromSession(session);
+		return "customer-home.html";
+	}
+
+	public Customer getCustomerFromSession(HttpSession session) {
+		if(session.getAttribute("customer")==null)
+			throw new NotLoggedInException();
+		else
+			return (Customer) session.getAttribute("customer");
 	}
 
 }

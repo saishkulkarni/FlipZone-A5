@@ -3,8 +3,11 @@ package com.jsp.flipzon.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.jsp.flipzon.entity.Product;
 import com.jsp.flipzon.service.AdminService;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,10 +25,16 @@ public class AdminController {
 	}
 
 	@GetMapping("/add-product")
-	public String loadAddProduct() {
-		return "add-product.html";
+	public String loadAddProduct(HttpSession session) {
+		return adminService.loadAddProduct(session);
 	}
 
+	@PostMapping("/add-product")
+	public String addProduct(@ModelAttribute Product product,HttpSession session) {
+		return adminService.addProduct(product,session);
+	}
+	
+	
 	@GetMapping("/view-products")
 	public String viewProducts() {
 		return "view-products.html";
@@ -40,5 +49,7 @@ public class AdminController {
 	public String deleteProduct() {
 		return "view-products.html";
 	}
+	
+	
 
 }

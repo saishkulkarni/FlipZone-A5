@@ -1,10 +1,15 @@
 package com.jsp.flipzon.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.jsp.flipzon.config.AES;
+import com.jsp.flipzon.entity.Customer;
+import com.jsp.flipzon.repository.CustomerRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +21,8 @@ public class GeneralService {
 	private String adminEmail;
 	@Value("${admin.password}")
 	private String adminPassword;
+	@Autowired
+	CustomerRepository customerRepository;
 
 	public String login(String email, String password, HttpSession session) {
 		if (email.equals(adminEmail) && password.equals(adminPassword)) {
@@ -23,8 +30,20 @@ public class GeneralService {
 			session.setAttribute("pass", "Login Success, Welcome Admin");
 			return "redirect:/admin/home";
 		} else {
-			session.setAttribute("fail", "Invalid Credentials");
-			return "redirect:/login";
+			Customer customer = customerRepository.findByEmail(email);
+			if (customer == null) {
+				session.setAttribute("fail", "Invalid Email");
+				return "redirect:/login";
+			} else {
+				if (AES.decrypt(customer.getPassword()).equals(password)) {
+					session.setAttribute("pass", "Login Success, Welcome " + customer.getName());
+					session.setAttribute("customer", customer);
+					return "redirect:/customer/home";
+				} else {
+					session.setAttribute("fail", "Invalid Password");
+					return "redirect:/login";
+				}
+			}
 		}
 	}
 
