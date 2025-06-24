@@ -2,8 +2,10 @@ package com.jsp.flipzon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,26 +32,27 @@ public class AdminController {
 	}
 
 	@PostMapping("/add-product")
-	public String addProduct(@ModelAttribute Product product,HttpSession session) {
-		return adminService.addProduct(product,session);
+	public String addProduct(@ModelAttribute Product product, HttpSession session) {
+		return adminService.addProduct(product, session);
 	}
-	
-	
+
 	@GetMapping("/view-products")
-	public String viewProducts() {
-		return "view-products.html";
+	public String viewProducts(HttpSession session, ModelMap map) {
+		return adminService.viewProducts(session, map);
 	}
 
-	@GetMapping("/edit-product")
-	public String editProduct() {
-		return "edit-product.html";
+	@GetMapping("/delete-product/{id}")
+	public String deleteProduct(@PathVariable Long id, HttpSession session) {
+		return adminService.deleteProduct(session, id);
 	}
 
-	@GetMapping("/delete-product")
-	public String deleteProduct() {
-		return "view-products.html";
+	@GetMapping("/edit-product/{id}")
+	public String editProduct(@PathVariable Long id, HttpSession session,ModelMap map) {
+		return adminService.editProduct(session,id,map);
 	}
-	
-	
 
+	@PostMapping("/update-product")
+	public String updateProduct(@ModelAttribute Product product, HttpSession session) {
+		return adminService.updateProduct(product, session);
+	}
 }
