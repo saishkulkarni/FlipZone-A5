@@ -1,17 +1,22 @@
 package com.jsp.flipzon.service;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import com.jsp.flipzon.config.AES;
 import com.jsp.flipzon.entity.Customer;
+import com.jsp.flipzon.entity.Product;
 import com.jsp.flipzon.exception.NotLoggedInException;
 import com.jsp.flipzon.repository.CustomerRepository;
+import com.jsp.flipzon.repository.ProductRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -23,6 +28,9 @@ public class CustomerService {
 
 	@Autowired
 	CustomerRepository customerRepository;
+
+	@Autowired
+	ProductRepository productRepository;
 
 	public String register(Customer customer, HttpSession session) {
 		if (customerRepository.existsByEmail(customer.getEmail())
@@ -70,11 +78,29 @@ public class CustomerService {
 		return "customer-home.html";
 	}
 
+	public String viewProducts(HttpSession session, ModelMap map, String name, String sort, boolean desc) {
+		getCustomerFromSession(session);
+		
+		Sort way = null;
+		if (desc)
+			way = Sort.by(sort).descending();
+		else
+			way = Sort.by(sort);
+			
+		List<Product> products = productRepository.findByNameLike("%" + name + "%", way);
+		if (products.isEmpty()) {
+			session.setAttribute("fail", "No Products Present");
+			return "redirect:/customer/home";
+		} else {
+			map.put("products", products);
+			return "products.html";
+		}
+	}
+
 	public Customer getCustomerFromSession(HttpSession session) {
-		if(session.getAttribute("customer")==null)
+		if (session.getAttribute("customer") == null)
 			throw new NotLoggedInException();
 		else
 			return (Customer) session.getAttribute("customer");
 	}
-
 }

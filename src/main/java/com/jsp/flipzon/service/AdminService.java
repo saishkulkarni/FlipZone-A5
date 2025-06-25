@@ -65,6 +65,31 @@ public class AdminService {
 		return "redirect:/admin/view-products";
 	}
 
+	public String editProduct(HttpSession session, Long id, ModelMap map) {
+		isLoggedIn(session);
+		Product product = productRepository.findById(id).get();
+		map.put("product", product);
+		return "edit-product.html";
+	}
+
+	public String updateProduct(Product product, HttpSession session) {
+		isLoggedIn(session);
+		try {
+			if (product.getImage().getInputStream().available() > 0) {
+				product.setImageLink(saveToCloud(product.getImage()));
+			} else {
+				product.setImageLink(productRepository.findById(product.getId()).get().getImageLink());
+			}
+			productRepository.save(product);
+			session.setAttribute("pass", "Product Updated Success");
+			return "redirect:/admin/view-products";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "redirect:/admin/home";
+		}
+
+	}
+
 	private String saveToCloud(MultipartFile image) {
 		Cloudinary cloudinary = new Cloudinary(url);
 		try {
@@ -81,31 +106,6 @@ public class AdminService {
 	private void isLoggedIn(HttpSession session) {
 		if (session.getAttribute("admin") == null)
 			throw new NotLoggedInException();
-	}
-
-	public String editProduct(HttpSession session, Long id, ModelMap map) {
-		isLoggedIn(session);
-		Product product = productRepository.findById(id).get();
-		map.put("product", product);
-		return "edit-product.html";
-	}
-
-	public String updateProduct(Product product, HttpSession session) {
-		isLoggedIn(session);
-		try {
-			if (product.getImage().getInputStream().available() > 0) {
-				product.setImageLink(saveToCloud(product.getImage()));
-			}else {
-				product.setImageLink(productRepository.findById(product.getId()).get().getImageLink());
-			}
-			productRepository.save(product);
-			session.setAttribute("pass", "Product Updated Success");
-			return "redirect:/admin/view-products";
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "redirect:/admin/home";
-		}
-
 	}
 
 }

@@ -1,15 +1,20 @@
 package com.jsp.flipzon.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.jsp.flipzon.config.AES;
 import com.jsp.flipzon.entity.Customer;
+import com.jsp.flipzon.entity.Product;
 import com.jsp.flipzon.repository.CustomerRepository;
+import com.jsp.flipzon.repository.ProductRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +26,8 @@ public class GeneralService {
 	private String adminEmail;
 	@Value("${admin.password}")
 	private String adminPassword;
+	@Autowired
+	ProductRepository productRepository;
 	@Autowired
 	CustomerRepository customerRepository;
 
@@ -60,6 +67,12 @@ public class GeneralService {
 		session.removeAttribute("admin");
 		session.setAttribute("fail", "Logout Success");
 		return "redirect:/";
+	}
+
+	public String loadMainPage(ModelMap map) {
+		List<Product> products=productRepository.findAll();
+		map.put("products", products);
+		return "main";
 	}
 
 }

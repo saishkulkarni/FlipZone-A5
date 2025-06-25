@@ -47,8 +47,8 @@ public class AdminController {
 	}
 
 	@GetMapping("/edit-product/{id}")
-	public String editProduct(@PathVariable Long id, HttpSession session,ModelMap map) {
-		return adminService.editProduct(session,id,map);
+	public String editProduct(@PathVariable Long id, HttpSession session, ModelMap map) {
+		return adminService.editProduct(session, id, map);
 	}
 
 	@PostMapping("/update-product")

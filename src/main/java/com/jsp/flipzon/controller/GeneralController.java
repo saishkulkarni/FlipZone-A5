@@ -2,6 +2,7 @@ package com.jsp.flipzon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,8 +18,8 @@ public class GeneralController {
 	GeneralService generalService;
 
 	@GetMapping("/")
-	public String loadMain() {
-		return "main.html";
+	public String loadMain(ModelMap map) {
+		return generalService.loadMainPage(map);
 	}
 
 	@GetMapping("/login")
