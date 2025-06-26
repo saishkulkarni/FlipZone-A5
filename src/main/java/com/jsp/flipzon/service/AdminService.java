@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -20,6 +21,9 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class AdminService {
+
+	@Autowired
+	RestTemplate restTemplate;
 
 	@Autowired
 	ProductRepository productRepository;
@@ -101,6 +105,36 @@ public class AdminService {
 			return "";
 		}
 
+	}
+
+	public String addDummyProducts(HttpSession session) {
+		isLoggedIn(session);
+		Map<String, List<Map<String, Object>>> response = restTemplate.getForObject("https://dummyjson.com/products",
+				Map.class);
+
+		List<Map<String, Object>> products = response.get("products");
+
+		for (Map<String, Object> product : products) {
+			String name = (String) product.get("title");
+			String description = (String) product.get("description");
+			Double price = (Double) product.get("price") * 85.73;
+			Integer stock = (Integer) product.get("stock");
+			List<String> images = (List<String>) product.get("images");
+			String imageLink = images.get(0);
+
+			Product product2 = new Product();
+			product2.setDescription(description);
+			product2.setImageLink(imageLink);
+			product2.setName(name);
+			product2.setPrice(price);
+			product2.setStock(stock);
+
+			productRepository.save(product2);
+
+		}
+
+		session.setAttribute("pass", "Dummy Records Added Success");
+		return "redirect:/admin/home";
 	}
 
 	private void isLoggedIn(HttpSession session) {
