@@ -10,4 +10,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	Page<Product> findByNameLike(String name, PageRequest pageRequest);
 
+	Product findByNameAndDescriptionAndPrice(String name, String description, Double price);
+
 }
