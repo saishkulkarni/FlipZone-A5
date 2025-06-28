@@ -48,32 +48,40 @@ public class CustomerController {
 	}
 
 	@GetMapping("/view-products")
-	public String viewProducts(HttpSession session, ModelMap map, 
-			@RequestParam(defaultValue = "") String name,
-			@RequestParam(defaultValue = "name") String sort,
-			@RequestParam(defaultValue = "false") boolean desc,
-			@RequestParam(defaultValue = "1") Integer page
-			) {
-		return customerService.viewProducts(session, map,name,sort,desc,page);
+	public String viewProducts(HttpSession session, ModelMap map, @RequestParam(defaultValue = "") String name,
+			@RequestParam(defaultValue = "name") String sort, @RequestParam(defaultValue = "false") boolean desc,
+			@RequestParam(defaultValue = "1") Integer page) {
+		return customerService.viewProducts(session, map, name, sort, desc, page);
 	}
 
 	@GetMapping("/add-to-cart/{id}")
-	public String addToCart(@PathVariable Long id,HttpSession session) {
-		return customerService.addToCart(id,session);
+	public String addToCart(@PathVariable Long id, HttpSession session) {
+		return customerService.addToCart(id, session);
 	}
 
 	@GetMapping("/view-cart")
-	public String loadCart(HttpSession session,ModelMap map) {
-		return customerService.viewCart(session,map);
+	public String loadCart(HttpSession session, ModelMap map) {
+		return customerService.viewCart(session, map);
 	}
 
 	@GetMapping("/cart/increase/{id}")
-	public String increaseItem(@PathVariable Long id,HttpSession session) {
-		return customerService.increaseItem(id,session);
+	public String increaseItem(@PathVariable Long id, HttpSession session) {
+		return customerService.increaseItem(id, session);
 	}
 
 	@GetMapping("/cart/decrease/{id}")
-	public String decreaseItem(@PathVariable Long id,HttpSession session) {
-		return customerService.decreaseItem(id,session);
+	public String decreaseItem(@PathVariable Long id, HttpSession session) {
+		return customerService.decreaseItem(id, session);
+	}
+
+	@GetMapping("/checkout")
+	public String checkout(HttpSession session, ModelMap map) {
+		return customerService.checkout(session, map);
+	}
+
+	@PostMapping("/success/{id}")
+	public String paymentSuccess(@PathVariable String id, @RequestParam String razorpay_payment_id,
+			HttpSession session) {
+		return customerService.paymentSuccess(id, razorpay_payment_id, session);
 	}
 }

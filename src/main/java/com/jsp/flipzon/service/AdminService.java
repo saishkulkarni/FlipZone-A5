@@ -117,7 +117,7 @@ public class AdminService {
 		for (Map<String, Object> product : products) {
 			String name = (String) product.get("title");
 			String description = (String) product.get("description");
-			Double price = (Double) product.get("price") * 85.73;
+			int price = (int) ((Double) product.get("price") * 85.73*100);
 			Integer stock = (Integer) product.get("stock");
 			List<String> images = (List<String>) product.get("images");
 			String imageLink = images.get(0);
@@ -126,7 +126,7 @@ public class AdminService {
 			product2.setDescription(description);
 			product2.setImageLink(imageLink);
 			product2.setName(name);
-			product2.setPrice(price);
+			product2.setPrice(price/100.0);
 			product2.setStock(stock);
 
 			productRepository.save(product2);
