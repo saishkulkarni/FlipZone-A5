@@ -84,4 +84,9 @@ public class CustomerController {
 			HttpSession session) {
 		return customerService.paymentSuccess(id, razorpay_payment_id, session);
 	}
+
+	@GetMapping("/orders")
+	public String displayPastOrders(HttpSession session, ModelMap map) {
+		return customerService.displayPastOrders(session, map);
+	}
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.jsp.flipzon.config.AES;
+import com.jsp.flipzon.controller.AdminController;
 import com.jsp.flipzon.entity.Customer;
 import com.jsp.flipzon.entity.CustomerOrder;
 import com.jsp.flipzon.entity.Item;
@@ -34,6 +35,8 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class CustomerService {
+
+	private final AdminController adminController;
 
 	@Value("${razor-pay.api.key}")
 	String key;
@@ -53,6 +56,10 @@ public class CustomerService {
 
 	@Autowired
 	ProductRepository productRepository;
+
+	CustomerService(AdminController adminController) {
+		this.adminController = adminController;
+	}
 
 	public String register(Customer customer, HttpSession session) {
 		if (customerRepository.existsByEmail(customer.getEmail())
@@ -247,7 +254,7 @@ public class CustomerService {
 			customerOrder.setCustomer(customer);
 			customerOrder.setTotalAmount(totalAmount);
 			customerOrder.setId(orderId);
-			
+
 			customerOrder.setItems(customer.getItems());
 
 			orderRepository.save(customerOrder);
@@ -278,5 +285,17 @@ public class CustomerService {
 
 		session.setAttribute("pass", "Purchase Success");
 		return "redirect:/customer/home";
+	}
+
+	public String displayPastOrders(HttpSession session, ModelMap map) {
+		Customer customer = getCustomerFromSession(session);
+		List<CustomerOrder> orders = orderRepository.findByCustomer(customer);
+		if (orders.isEmpty()) {
+			session.setAttribute("fail", "No Orders Yet");
+			return "redirect:/customer/home";
+		} else {
+			map.put("orders", orders);
+			return "orders.html";
+		}
 	}
 }
