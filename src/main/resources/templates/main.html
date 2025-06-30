@@ -1,142 +1,760 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlipZone</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-    main {
-      flex: 1;
-    }
-    .navbar-brand {
-      font-weight: bold;
-      font-size: 1.5rem;
-    }
-    .hero {
-      padding: 60px 20px;
-      background: #fff;
-    }
-    .card {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlipZone - Your Ultimate Shopping Destination</title>
     
-      margin-bottom: 30px;
-    }
-    footer {
-      background-color: #343a40;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-    }
-  </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.4;
+            color: var(--dark-text);
+            background-color: #ffffff;
+        }
+
+        /* Main wrapper for sticky footer */
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        /* Navbar Styling - Compact */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: white !important;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .navbar-brand:hover {
+            color: #ecf0f1 !important;
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-buttons .btn {
+            margin: 0 0.2rem;
+            padding: 0.4rem 1rem;
+            font-weight: 500;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-outline-light:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-light {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+        }
+
+        .btn-light:hover {
+            background-color: #ecf0f1;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section - Compact */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+
+        /* Alert Styling - Compact */
+        .alert-container {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            z-index: 1050;
+            max-width: 350px;
+        }
+
+        .custom-alert {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, var(--success-color), #2ecc71);
+            color: white;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 2rem 0;
+            background-color: var(--light-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* Carousel Styling */
+        .product-carousel {
+            margin: 1rem 0;
+        }
+
+        .carousel-item {
+            padding: 0 10px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: none;
+            overflow: hidden;
+            height: 450px; /* Fixed height for consistency */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .product-image {
+            height: 220px; /* Fixed height */
+            width: 100%;
+            object-fit: cover; /* This ensures the image covers the area without distortion */
+            object-position: center; /* Centers the image */
+            border-radius: 12px 12px 0 0;
+            flex-shrink: 0; /* Prevents the image from shrinking */
+        }
+
+        .card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Takes remaining space */
+            justify-content: space-between;
+        }
+
+        .product-content {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            height: 2.6rem; /* Fixed height for 2 lines */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-description {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+            height: 2.8rem; /* Fixed height for 2 lines */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem 0;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .product-stock {
+            font-size: 0.8rem;
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 0.9rem;
+            margin-top: auto; /* Pushes button to bottom */
+        }
+
+        .btn-buy:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: translateY(-1px);
+            color: white;
+        }
+
+        /* Carousel Controls */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 4%;
+            color: var(--primary-color);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            padding: 15px;
+            width: 35px;
+            height: 35px;
+        }
+
+        .carousel-indicators {
+            margin-bottom: 0;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin: 0 3px;
+        }
+
+        /* No Products Message */
+        .no-products {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin: 2rem 0;
+        }
+
+        .no-products i {
+            font-size: 4rem;
+            color: var(--light-text);
+            margin-bottom: 1rem;
+        }
+
+        .no-products h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .no-products p {
+            color: var(--light-text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 2rem 0;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h5 {
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Footer - Fixed at bottom */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: auto; /* This pushes footer to bottom */
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .product-card {
+                height: 420px;
+            }
+
+            .product-image {
+                height: 200px;
+            }
+
+            .feature-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-card {
+                height: 400px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
-    <a class="navbar-brand" href="/">FlipZone</a>
-    <div class="ms-auto">
-      <a href="/login" class="btn btn-outline-primary me-2">Login</a>
-      <a href="/customer/register" class="btn btn-primary">Register</a>
-    </div>
-  </nav>
-
-  <!-- Toast Alert Section -->
-  <div aria-live="polite" aria-atomic="true" class="position-relative">
-    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
-      
-      <!-- Success Toast -->
-      <div class="toast align-items-center text-white bg-success border-0 mb-2"
-           role="alert" aria-live="assertive" aria-atomic="true"
-           th:if="${session.pass}">
-        <div class="d-flex">
-          <div class="toast-body" th:text="${session.pass}"></div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                  data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
-
-      <!-- Error Toast -->
-      <div class="toast align-items-center text-white bg-danger border-0 mb-2"
-           role="alert" aria-live="assertive" aria-atomic="true"
-           th:if="${session.fail}">
-        <div class="d-flex">
-          <div class="toast-body" th:text="${session.fail}"></div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                  data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
-
-      <!-- Message Toast -->
-      <div class="toast align-items-center text-bg-secondary border-0 mb-2"
-           role="alert" aria-live="assertive" aria-atomic="true"
-           th:if="${@generalService.removeMessage()}">
-        <div class="d-flex">
-          <div class="toast-body" th:text="${@generalService.removeMessage()}"></div>
-          <button type="button" class="btn-close me-2 m-auto"
-                  data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-  <!-- Main Content -->
-  <main>
-    <section class="hero container">
-      <div class="row text-center mb-4">
-        <h2>Our Products</h2>
-      </div>
-      <div class="row">
-
-        <!-- Product Card 1 -->
-        <div class="col-md-4" th:if="${!products.isEmpty()}" th:each="product:${products}">
-          <div class="card h-100">
-            <img th:src="${product.imageLink}" class="card-img-top" th:alt="${product.name}">
-            <div class="card-body">
-              <h5 class="card-title" th:text="${product.name}"></h5>
-              <p class="card-text" th:text="${product.description}"></p>
-              <p th:text="${product.stock}+' Units'"><strong>Stock:</strong> </p>
-              <p th:text="${product.price}+' &#8377'"><strong>Price:</strong></p>
-              <a href="/login" class="btn btn-outline-primary w-100">Login to Buy</a>
+    <div class="page-wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-shop"></i> FlipZone
+                </a>
+                <div class="nav-buttons">
+                    <a href="/login" class="btn btn-outline-light">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                    <a href="/customer/register" class="btn btn-light">
+                        <i class="bi bi-person-plus"></i> Register
+                    </a>
+                </div>
             </div>
-          </div>
+        </nav>
+
+        <!-- Alert Messages -->
+        <div class="alert-container">
+            <!-- Success Alert -->
+            <div th:if="${session.pass}" class="alert alert-success custom-alert alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span th:text="${session.pass}"></span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Error Alert -->
+            <div th:if="${session.fail}" class="alert alert-danger custom-alert alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${session.fail}"></span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Info Alert -->
+            <!-- Info Alert -->
+            <div th:if="${@generalService.removeMessage()}" class="alert alert-info custom-alert alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <span th:text="${@generalService.removeMessage()}"></span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
         </div>
-       
-        <div th:if="${products.isEmpty()}">
-        	<span>No Products Yet Will be adding soon...</span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="container">
+                    <h1 class="hero-title">Welcome to FlipZone</h1>
+                    <p class="hero-subtitle">Discover amazing products at unbeatable prices</p>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section class="products-section">
+                <div class="container">
+                    <h2 class="section-title">
+                        <i class="bi bi-bag-heart"></i> Our Products
+                    </h2>
+
+                    <!-- Products Carousel -->
+                    <div th:if="${!products.isEmpty()}">
+                        <div id="productsCarousel" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                
+                                <!-- Generate carousel slides dynamically -->
+                                <th:block th:each="slideIndex : ${#numbers.sequence(0, (products.size() - 1) / 3)}">
+                                    <div class="carousel-item" th:classappend="${slideIndex == 0} ? 'active' : ''">
+                                        <div class="row">
+                                            <th:block th:each="productIndex : ${#numbers.sequence(slideIndex * 3, T(java.lang.Math).min(slideIndex * 3 + 2, products.size() - 1))}">
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card product-card" th:with="product=${products[productIndex]}">
+                                                        <img th:src="${product.imageLink}" 
+                                                             class="product-image" 
+                                                             th:alt="${product.name}"
+                                                             onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=No+Image+Available'">
+                                                        <div class="card-body">
+                                                            <div class="product-content">
+                                                                <h5 class="product-title" th:text="${product.name}">Product Name</h5>
+                                                                <p class="product-description" th:text="${product.description}">Product description goes here and will be truncated if too long</p>
+                                                                <div class="product-info">
+                                                                    <span class="product-price">₹<span th:text="${#numbers.formatDecimal(product.price, 0, 2)}">0.00</span></span>
+                                                                    <span class="product-stock">
+                                                                        <i class="bi bi-box"></i> <span th:text="${product.stock}">0</span> Units
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <a href="/login" class="btn btn-buy">
+                                                                <i class="bi bi-cart-plus"></i> Login to Buy
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </th:block>
+                                
+                            </div>
+
+                            <!-- Carousel Controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productsCarousel" data-bs-slide="prev" th:if="${products.size() > 3}">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productsCarousel" data-bs-slide="next" th:if="${products.size() > 3}">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+
+                            <!-- Carousel Indicators -->
+                            <div class="carousel-indicators" th:if="${products.size() > 3}">
+                                <th:block th:each="indicatorIndex : ${#numbers.sequence(0, (products.size() - 1) / 3)}">
+                                    <button type="button" 
+                                            data-bs-target="#productsCarousel" 
+                                            th:data-bs-slide-to="${indicatorIndex}"
+                                            th:classappend="${indicatorIndex == 0} ? 'active' : ''"
+                                            th:attr="aria-current=${indicatorIndex == 0} ? 'true' : 'false'"></button>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No Products Message -->
+                    <div th:if="${products.isEmpty()}" class="no-products">
+                        <i class="bi bi-bag-x"></i>
+                        <h3>No Products Available</h3>
+                        <p>We're working hard to bring you amazing products. Check back soon!</p>
+                        <div>
+                            <a href="/customer/register" class="btn btn-buy" style="width: auto; padding: 0.75rem 2rem;">
+                                <i class="bi bi-person-plus"></i> Join FlipZone Today
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="features-section">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="feature-card">
+                                    <i class="bi bi-truck" style="color: var(--secondary-color);"></i>
+                                    <h5>Fast Delivery</h5>
+                                    <p>Quick and reliable delivery to your doorstep within 24-48 hours</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="feature-card">
+                                    <i class="bi bi-shield-check" style="color: var(--success-color);"></i>
+                                    <h5>Secure Shopping</h5>
+                                    <p>Your data and payments are always protected with advanced encryption</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="feature-card">
+                                    <i class="bi bi-headset" style="color: var(--accent-color);"></i>
+                                    <h5>24/7 Support</h5>
+                                    <p>We're here to help you anytime, anywhere with dedicated customer service</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
 
-
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 FlipZone. All rights reserved.</p>
+        <!-- Footer - Fixed at bottom -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-md-start text-center">
+                        <p>&copy; 2025 FlipZone. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end text-center">
+                        <p>Made with <i class="bi bi-heart-fill" style="color: #e74c3c;"></i> for amazing shopping experience</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
-  </footer>
 
-  <!-- Bootstrap JS and Toast Activation -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const toastElList = [].slice.call(document.querySelectorAll('.toast'));
-      toastElList.forEach(function (toastEl) {
-        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        toast.show();
-      });
-    });
-  </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts after 4 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    if (alert && !alert.classList.contains('fade')) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 4000);
+            });
+
+            // Initialize carousel with optimized settings
+            const carousel = document.querySelector('#productsCarousel');
+            if (carousel) {
+                new bootstrap.Carousel(carousel, {
+                    interval: 4000,
+                    wrap: true,
+                    touch: true
+                });
+            }
+
+            // Enhanced image loading with better error handling
+            const images = document.querySelectorAll('.product-image');
+            images.forEach(img => {
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.4s ease';
+                
+                // Function to show image
+                const showImage = () => {
+                    img.style.opacity = '1';
+                };
+                
+                // Check if image is already loaded
+                if (img.complete && img.naturalHeight !== 0) {
+                    showImage();
+                } else {
+                    // Add load event listener
+                    img.addEventListener('load', showImage);
+                    
+                    // Add error event listener
+                    img.addEventListener('error', function() {
+                        this.src = 'https://via.placeholder.com/400x220/f8f9fa/6c757d?text=No+Image+Available';
+                        showImage();
+                    });
+                }
+            });
+
+            // Enhanced hover effects for product cards
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                    this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Enhanced hover effects for feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Pause carousel on hover, resume on leave
+            if (carousel) {
+                const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                
+                carousel.addEventListener('mouseenter', function() {
+                    if (bsCarousel) bsCarousel.pause();
+                });
+                
+                carousel.addEventListener('mouseleave', function() {
+                    if (bsCarousel) bsCarousel.cycle();
+                });
+            }
+
+            // Add smooth scrolling for better UX
+            document.documentElement.style.scrollBehavior = 'smooth';
+
+            // Add loading animation for buttons
+            const buttons = document.querySelectorAll('.btn-buy');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Add loading state
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Redirecting...';
+                    this.style.pointerEvents = 'none';
+                    
+                    // Reset after a short delay (in case redirect fails)
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.pointerEvents = 'auto';
+                    }, 3000);
+                });
+            });
+
+            // Add intersection observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature cards for scroll animations
+            featureCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
 
 </body>
 </html>
